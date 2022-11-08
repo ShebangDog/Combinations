@@ -1,15 +1,13 @@
 defmodule Enumerate do
   @moduledoc false
 
-  def of(list) do
-    enumerate(list, [])
-  end
-
-  defp enumerate(multidimensional_list = [head | tail], result) when is_list(head) do
-    Enum.reduce(multidimensional_list, result, &enumerate/2)
-  end
-
-  defp enumerate(list, result) do
-    [list | result]
+  def of(tree, result \\ []) do
+    case tree do
+      %Tree.Root{children: children} ->
+        Enum.flat_map(children, &of(&1, result))
+      %Tree.Node{value: value, children: children} ->
+        Enum.flat_map(children, &of(&1, [value | result]))
+      %Tree.Leaf{value: value} -> [[value | result]]
+    end
   end
 end
